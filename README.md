@@ -69,11 +69,12 @@ int main(int argc, char** argv){
 			if (i % j == 0) a++;
 		}
 		if (a == 0) {
-			if (5 == row++) {
+			if (5 == row) {
 				printf("\n");
 				row = 0;
 			}
 			printf("%d\t", i);
+			row++;
 		}else{
 			a = 0;
 		}
