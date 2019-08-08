@@ -46,41 +46,41 @@ int main(int argc, char** argv)
 #include <stdlib.h>
 
 int main(int argc, char** argv){
-	int n= 0;
+    int n= 0;
 
-	if (argc > 1) {
-		// 如果命令行有输入的参数，则从命令行获取
-		n = atoi(argv[1]);	// 命令行的数字字符串需要用 atoi 函数转换成 int 类型
-	}else{
-		printf("请输入一个正整数：");
-		scanf("%d", &n);
-	}
+    if (argc > 1) {
+        // 如果命令行有输入的参数，则从命令行获取
+        n = atoi(argv[1]);  // 命令行的数字字符串需要用 atoi 函数转换成 int 类型
+    }else{
+        printf("请输入一个正整数：");
+        scanf("%d", &n);
+    }
 
-	if (n < 2) {
-		printf("输入不正确：%d\n", n);
-		return 1;
-	}
+    if (n < 2) {
+        printf("输入不正确：%d\n", n);
+        return 1;
+    }
 
-	printf("您输入的数是：%d, %d以内的素数有：\n", n, n);
-	int a = 0;
-	int row = 0;
-	for (int i=1; i<=n; i++) {
-		for(int j=2; j<i; j++) {
-			if (i % j == 0) a++;
-		}
-		if (a == 0) {
-			if (5 == row) {
-				printf("\n");
-				row = 0;
-			}
-			printf("%d\t", i);
-			row++;
-		}else{
-			a = 0;
-		}
-	}
-	printf("\n");
-	return 0;
+    printf("您输入的数是：%d, %d以内的素数有：\n", n, n);
+    int a = 0;
+    int row = 0;
+    for (int i=1; i<=n; i++) {
+        for(int j=2; j<i; j++) {
+            if (i % j == 0) a++;
+        }
+        if (a == 0) {
+            if (5 == row) {
+                printf("\n");
+                row = 0;
+            }
+            printf("%d\t", i);
+            row++;
+        }else{
+            a = 0;
+        }
+    }
+    printf("\n");
+    return 0;
 }
 
 ```
