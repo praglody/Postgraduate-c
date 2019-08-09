@@ -87,81 +87,43 @@ int main(int argc, char** argv){
 
 ### 3. 写一个类似 linux 的 tail 命令的程序
 
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+在 Unix 操作系统中有一条命令，命令的功能是打印文本文件的最后 n 行。命令格式为:
 
-#define BUFSIZE 256
+tail [-n] filename
 
-int tail( char* filename, unsigned int n )
-{
-    FILE* f = fopen( filename, "r" );
+其中，tail 为命令名；参数 filename 为文本文件名；参数 [-n] 表示要打印的行数，该参数是可选的，缺省值为10，即无此参数时，表示打印文件的最后10行。例如，命令
 
-    if ( !f )
-    {
-        printf( "Can not open the file: %s\n", filename );
-        return 1;
-    }
+tail -20  example.txt
 
-    fseek( f, -1, SEEK_END );                   /* SEEK_END位置是一个无效的位置，对于文件而言，SEEK_END的前一个位置是文件中最后的那个数据的位置 */
-    unsigned int num = 0;
-    while ( 1 )
-    {
-        if ( fgetc( f ) == '\n' )
-        {
-            if ( ++num > n )
-                break;
-        }
-        if ( fseek( f, -2, SEEK_CUR ) != 0 )    /* 当读取好一个字符串后，文件的指针会移动到下一个位置上，所以要倒序读取，此时文件的指针需要向前移动2个字节 */
-        {
-            fseek( f, 0, SEEK_SET );            /* 如果fseek返回值不是零，说明已经到达的文件的头部，该文件需要从头全部输出 */
-            break;
-        }
-    }
+表示打印文本文件 example.txt 的最后 20 行。如果被打印的文本文件中行数少于 n 行或者少于 10 行，该命令将打印文件中的所有行。
 
-    char buffer[BUFSIZE];
-    while ( fgets( buffer, BUFSIZE, f ) )       /* 此处没有用feof判断，因为用feof判断会导致最后一行输出两次，feof是在文件指针失效后，还要读取一次才判断为真 */
-    {
-        printf( "%s", buffer );
-    }
-    return 0;
-}
+请用带参数的 main 函数实现该程序。该程序应该具有一定的错误处理能力，例如，能够处理非法命令参数和非法文件名。
 
+程序中可以使用以下 C 库函数:
 
-int main( int argc, char** argv )
-{
-    char* file_name;
-    unsigned int n = 10;
+- int atoi(char *s) 将数字串转换为相应整数;
+- fgets(char *s, int n, FILE *fp)   从文件中读入一行;
+- `void* malloc(size_t size);` / `void free(void* p);`  申请和释放内存;
+- strlen    计算字符串的长度;
+- strcpy    将一个字符串拷贝到另一个字符串中。
 
-    int i = 0;
-    while ( ++i < argc )
-    {
-        if ( 0 == strcmp( argv[i], "-n" ) && (i + 1) < argc )
-        {
-            n = atoi( argv[++i] );
-        }else{
-            file_name = argv[i];
-        }
-    }
+除此之外，不允许使用其它库函数。
 
-    if ( file_name == NULL )
-    {
-        printf( "Please input a filename\n" );
-        return 1;
-    }
+提示:
 
-    return tail( file_name, n );
-}
+1. 可以在命令行参数正确性分析过程中获取被打印的文本文件名称以及需要打印的行数等信息;
+2. 如果命令行分析正确，可以建立一个不带头结点的单向循环链表存放从文件中读到的内容。
 
-```
+- 直接操作文件的实现 [src/tail.c](src/tail.c)
+- 使用单向循环链表的实现 [src/tail_by_linked_list.c]
+
 
 ### 4. 计算重复数字的和
 
 请编写程序，该程序首先通过键盘输入获得整型数据 a 与 n, 然后计算 sum=a+aa+aaa+...(共n项)，最后输出计算结果。例如:当 a=5, n=4 时计算 sum=5+55+555+5555。
 
 [src/sumRepeatNum.c](src/sumRepeatNum.c)
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 
