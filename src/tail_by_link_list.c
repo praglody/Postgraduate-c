@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFSIZE 5
+#define BUFSIZE 4
 
 typedef struct List_t
 {
@@ -23,9 +23,7 @@ int main( int argc, char** argv )
         if ( 0 == strcmp( argv[i], "-n" ) && (i + 1) < argc )
         {
             n = atoi( argv[++i] );
-        }
-        else
-        {
+        } else {
             file_name = argv[i];
         }
     }
@@ -61,6 +59,7 @@ int tail_by_link_list(char* filename, unsigned int n)
     cursor = (*cursor).next = head;
     char buffer[BUFSIZE];
     char flag = 0;  //是否跳到下一行
+    char* tmp;
     int i;
     while (fgets(buffer, BUFSIZE, f))
     {
@@ -74,7 +73,7 @@ int tail_by_link_list(char* filename, unsigned int n)
         i = 0;
         while (i < BUFSIZE)
         {
-            if (buffer[i] == 'n')
+            if (buffer[i] == '\n')
             {
                 flag = 1;   //本行结束，下次需要指向下一行进行写入
                 i += 2;
@@ -85,16 +84,19 @@ int tail_by_link_list(char* filename, unsigned int n)
         if ((*cursor).length >= strlen((*cursor).data) + i)
         {
             // 当前data内存空间足够
-            memcpy((*cursor).data + strlen((*cursor).data), buffer, i);
-        }
-        else
-        {
-            (*cursor).data = (char *)realloc((*cursor).data, (*cursor).length + i);
-            memcpy((*cursor).data + strlen((*cursor).data), buffer, i);
-            (*cursor).length += i;
+            // memcpy((*cursor).data + strlen((*cursor).data), buffer, i);
+            strcpy((*cursor).data + strlen((*cursor).data), buffer);
+        } else {
+            tmp = (*cursor).data;
+            (*cursor).length += i - 1;
+            (*cursor).data = (char *)malloc((*cursor).length);          // 分配新的内存空间
+            strcpy((*cursor).data, tmp);                                // 将旧的字符串拷贝到新的内存
+            strcpy((*cursor).data + strlen(tmp), buffer);               // 将buffer中的字符串拷贝到原始字符串后面
+            free(tmp);                                                  // 释放旧的内存空间
+            //memcpy((*cursor).data + strlen((*cursor).data), buffer, i);
         }
     }
-    cursor = head;
+    cursor = (*cursor).next;
     for (i = 0; i < n; i++)
     {
         if (*(*cursor).data == '\0')
